@@ -1,0 +1,12 @@
+{
+  "name": "FitAI",
+  "short_name": "FitAI",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0B0F13",
+  "theme_color": "#4ADE80",
+  "description": "FitAI fitness trainer app.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": []
+}
