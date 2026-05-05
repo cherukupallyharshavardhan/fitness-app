@@ -1,18 +1,636 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <base href="$FLUTTER_BASE_HREF">
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="FitAI fitness trainer app.">
-  <meta name="theme-color" content="#0B0F13">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="FitAI">
-  <title>FitAI</title>
-  <link rel="manifest" href="manifest.json">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FitAI Preview</title>
+  <style>
+    :root {
+      --bg: #070a0d;
+      --phone: #0b0f13;
+      --card: #151b21;
+      --card2: #1c242c;
+      --text: #f7faf8;
+      --muted: #98a4af;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --amber: #fbbf24;
+      --red: #fb7185;
+      --line: rgba(255,255,255,.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #070a0d 0%, #0f171d 54%, #07120b 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page {
+      width: min(1120px, 100%);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, var(--green), #16a34a);
+      color: #07110c;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 24px;
+      box-shadow: 0 14px 40px rgba(74,222,128,.2);
+    }
+
+    .brand-name {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .intro h1 {
+      margin: 0;
+      max-width: 680px;
+      font-size: clamp(38px, 5.8vw, 72px);
+      line-height: .96;
+      letter-spacing: 0;
+    }
+
+    .intro p {
+      max-width: 640px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .feature-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .feature {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(21,27,33,.72);
+    }
+
+    .feature strong { display: block; margin-bottom: 5px; }
+    .muted { color: var(--muted); }
+
+    .phone {
+      width: min(390px, 100%);
+      height: 790px;
+      border: 10px solid #111820;
+      border-radius: 42px;
+      background: var(--phone);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 28px 90px rgba(0,0,0,.58);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status {
+      height: 34px;
+      padding: 10px 22px 0;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      overflow: auto;
+      padding: 16px 18px 92px;
+    }
+
+    .screen.active { display: block; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .primary-card {
+      background: linear-gradient(145deg, rgba(74,222,128,.18), rgba(96,165,250,.1)), var(--card);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .between {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .metric strong { font-size: 20px; }
+
+    .section {
+      margin: 22px 0 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(74,222,128,.12);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pill.blue {
+      color: var(--blue);
+      background: rgba(96,165,250,.12);
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #26313a;
+      margin-top: 9px;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+    }
+
+    .exercise {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .exercise:first-of-type { border-top: 0; }
+
+    .num {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--card2);
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    button {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--green);
+      color: #06100a;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button.secondary {
+      color: var(--green);
+      background: transparent;
+      border: 1px solid rgba(74,222,128,.45);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      outline: 0;
+    }
+
+    textarea {
+      min-height: 104px;
+      resize: none;
+    }
+
+    .chat {
+      display: grid;
+      gap: 10px;
+      padding-bottom: 76px;
+    }
+
+    .msg {
+      width: fit-content;
+      max-width: 84%;
+      padding: 12px 14px;
+      border-radius: 18px;
+      line-height: 1.45;
+      background: var(--card);
+    }
+
+    .msg.user {
+      justify-self: end;
+      background: var(--green);
+      color: #06100a;
+    }
+
+    .composer {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 92px;
+      display: grid;
+      grid-template-columns: 1fr 52px;
+      gap: 8px;
+    }
+
+    .composer input { margin: 0; }
+
+    .nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 8px 10px 12px;
+      background: rgba(11,15,19,.97);
+      border-top: 1px solid var(--line);
+    }
+
+    .nav button {
+      min-height: 54px;
+      border-radius: 16px;
+      background: transparent;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      gap: 2px;
+    }
+
+    .nav button.active {
+      color: var(--green);
+      background: rgba(74,222,128,.12);
+    }
+
+    .nav b { font-size: 19px; line-height: 1; }
+
+    .admin-nav { grid-template-columns: repeat(3, 1fr); }
+
+    .hidden { display: none; }
+
+    .login {
+      min-height: 100%;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+    }
+
+    .login .logo {
+      margin: 0 auto 4px;
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      font-size: 30px;
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+      .intro { order: 2; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .phone { height: 750px; }
+    }
+  </style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <main class="page">
+    <section class="intro">
+      <div class="brand">
+        <div class="logo">F</div>
+        <div class="brand-name">FitAI</div>
+      </div>
+      <h1>Practical AI fitness coach for workouts, meals, and progress.</h1>
+      <p>Preview the real app flow before running Flutter. FitAI uses Firebase for login and progress, and OpenAI for workout, diet, and coaching suggestions.</p>
+      <div class="feature-grid">
+        <div class="feature"><strong>Personal dashboard</strong><span class="muted">Goal, calories, streak, and today's workout.</span></div>
+        <div class="feature"><strong>AI workout builder</strong><span class="muted">Plans based on goal and time available.</span></div>
+        <div class="feature"><strong>Diet assistant</strong><span class="muted">Meal calorie estimate and next meal suggestion.</span></div>
+        <div class="feature"><strong>Progress tracking</strong><span class="muted">Weight logs and completed workouts.</span></div>
+      </div>
+    </section>
+
+    <section class="phone">
+      <div class="status"><span>9:41</span><span>5G 100%</span></div>
+
+      <section class="screen active" id="login">
+        <div class="login">
+          <div class="logo">F</div>
+          <h2 class="title" style="text-align:center">Welcome to FitAI</h2>
+          <p class="subtitle" style="text-align:center">Create your profile and get a practical plan.</p>
+          <input value="Harsha" aria-label="Name">
+          <input value="harsha@example.com" aria-label="Email">
+          <input value="password123" aria-label="Password">
+          <div class="row">
+            <input value="22" aria-label="Age">
+            <input value="72.5 kg" aria-label="Weight">
+          </div>
+          <select aria-label="Goal">
+            <option>Lose weight</option>
+            <option>Gain muscle</option>
+            <option>Improve endurance</option>
+          </select>
+          <button onclick="show('home')">Start Training</button>
+          <button class="secondary" onclick="show('admin-dashboard')">Open Admin Panel</button>
+        </div>
+      </section>
+
+      <section class="screen" id="home">
+        <div class="top">
+          <div>
+            <h1 class="title">FitAI</h1>
+            <p class="subtitle">Good evening, Harsha</p>
+          </div>
+          <div class="logo">F</div>
+        </div>
+        <div class="card primary-card">
+          <div class="between">
+            <div>
+              <span class="pill">Lose weight</span>
+              <h2 style="margin:12px 0 4px">Today: 30 min plan</h2>
+              <p class="subtitle">Strength circuit + short cardio finisher</p>
+            </div>
+          </div>
+          <div class="bar"><span style="width:68%"></span></div>
+          <p class="subtitle">68% of today's calorie target used</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>Calories</span><strong>1,420</strong></div>
+          <div class="metric"><span>Protein</span><strong>92g</strong></div>
+          <div class="metric"><span>Streak</span><strong>6d</strong></div>
+        </div>
+        <div class="section">Workout preview</div>
+        <div class="card">
+          <div class="exercise"><div class="num">1</div><div><strong>Bodyweight Squat</strong><br><span class="muted">3 sets x 15 reps</span></div><span class="pill blue">Legs</span></div>
+          <div class="exercise"><div class="num">2</div><div><strong>Incline Push-up</strong><br><span class="muted">3 sets x 10 reps</span></div><span class="pill blue">Chest</span></div>
+          <div class="exercise"><div class="num">3</div><div><strong>Plank Hold</strong><br><span class="muted">3 sets x 40 sec</span></div><span class="pill blue">Core</span></div>
+          <button onclick="show('workout')">Open Full Plan</button>
+        </div>
+      </section>
+
+      <section class="screen" id="workout">
+        <div class="top">
+          <div>
+            <h1 class="title">Workout</h1>
+            <p class="subtitle">Goal based plan generator</p>
+          </div>
+          <button class="secondary" style="width:88px" onclick="show('chat')">Coach</button>
+        </div>
+        <div class="card">
+          <div class="between"><strong>Time available</strong><span class="pill">30 min</span></div>
+          <input type="range" min="10" max="90" value="30">
+          <button>Generate AI Plan</button>
+        </div>
+        <div class="section">Generated plan</div>
+        <div class="card">
+          <h3 style="margin-top:0">Fat-loss full body circuit</h3>
+          <div class="exercise"><div class="num">1</div><div><strong>Warm-up walk</strong><br><span class="muted">5 minutes easy pace</span></div><span>5m</span></div>
+          <div class="exercise"><div class="num">2</div><div><strong>Squat to chair</strong><br><span class="muted">3 sets x 12 reps</span></div><span>8m</span></div>
+          <div class="exercise"><div class="num">3</div><div><strong>Push-up variation</strong><br><span class="muted">3 sets x 8-10 reps</span></div><span>7m</span></div>
+          <div class="exercise"><div class="num">4</div><div><strong>Mountain climber</strong><br><span class="muted">4 rounds x 30 sec</span></div><span>6m</span></div>
+          <button class="secondary">Mark Workout Complete</button>
+        </div>
+      </section>
+
+      <section class="screen" id="diet">
+        <div class="top">
+          <div>
+            <h1 class="title">Diet</h1>
+            <p class="subtitle">Calories and next meal help</p>
+          </div>
+          <div class="logo">F</div>
+        </div>
+        <textarea>2 eggs, 2 slices toast, banana, black coffee</textarea>
+        <button>Analyze Meal</button>
+        <div class="section">AI estimate</div>
+        <div class="card">
+          <div class="between"><h2 style="margin:0">620 kcal</h2><span class="pill">Balanced</span></div>
+          <div class="metrics" style="margin:14px 0">
+            <div class="metric"><span>Protein</span><strong>24g</strong></div>
+            <div class="metric"><span>Carbs</span><strong>78g</strong></div>
+            <div class="metric"><span>Fat</span><strong>19g</strong></div>
+          </div>
+          <p><strong>Next meal:</strong> Chicken rice bowl with vegetables and curd.</p>
+          <p class="subtitle">Add more protein and fiber to stay full.</p>
+        </div>
+      </section>
+
+      <section class="screen" id="chat">
+        <div class="top">
+          <div>
+            <h1 class="title">FitAI Coach</h1>
+            <p class="subtitle">Ask practical fitness questions</p>
+          </div>
+        </div>
+        <div class="chat">
+          <div class="msg user">I only have 20 minutes today.</div>
+          <div class="msg">Do 4 rounds: squats 12, push-ups 8, rows 12, plank 30 sec. Rest 45 sec between rounds.</div>
+          <div class="msg user">What should I eat after?</div>
+          <div class="msg">Pick protein plus carbs: eggs and rice, chicken wrap, paneer bowl, or Greek yogurt with fruit.</div>
+        </div>
+        <div class="composer">
+          <input value="Ask FitAI...">
+          <button>Go</button>
+        </div>
+      </section>
+
+      <section class="screen" id="profile">
+        <div class="top">
+          <div>
+            <h1 class="title">Profile</h1>
+            <p class="subtitle">Your fitness data</p>
+          </div>
+          <button class="secondary" style="width:82px" onclick="show('login')">Logout</button>
+        </div>
+        <div class="card">
+          <h2 style="margin:0 0 10px">Harsha</h2>
+          <div class="between"><span class="muted">Goal</span><strong>Lose weight</strong></div>
+          <div class="between"><span class="muted">Weight</span><strong>72.5 kg</strong></div>
+          <div class="between"><span class="muted">Completed</span><strong>4 workouts</strong></div>
+        </div>
+        <div class="section">Log weight</div>
+        <input value="72.5">
+        <button>Save Progress</button>
+        <div class="section">History</div>
+        <div class="card"><strong>72.5 kg</strong><br><span class="muted">Today - 4 workouts completed</span></div>
+        <div class="card"><strong>73.1 kg</strong><br><span class="muted">Last week - 3 workouts completed</span></div>
+      </section>
+
+      <section class="screen" id="admin-dashboard">
+        <div class="top">
+          <div>
+            <h1 class="title">Admin Dashboard</h1>
+            <p class="subtitle">Service overview only for admin</p>
+          </div>
+          <div class="logo">F</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>Customers</span><strong>128</strong></div>
+          <div class="metric"><span>Active</span><strong>86</strong></div>
+          <div class="metric"><span>Admins</span><strong>1</strong></div>
+        </div>
+        <div class="section">AI service status</div>
+        <div class="card">
+          <div class="between"><strong>Workout AI</strong><span class="pill">On</span></div>
+          <div class="between"><strong>Diet AI</strong><span class="pill">On</span></div>
+          <div class="between"><strong>Chat Coach</strong><span class="pill">On</span></div>
+        </div>
+      </section>
+
+      <section class="screen" id="admin-users">
+        <div class="top">
+          <div>
+            <h1 class="title">Customers</h1>
+            <p class="subtitle">People using FitAI</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="between"><strong>Harsha</strong><span class="pill">user</span></div>
+          <p class="subtitle">Goal: lose weight | 72.5 kg | Joined today</p>
+        </div>
+        <div class="card">
+          <div class="between"><strong>Priya</strong><span class="pill">user</span></div>
+          <p class="subtitle">Goal: gain muscle | 58.0 kg | Joined Apr 28</p>
+        </div>
+        <div class="card">
+          <div class="between"><strong>Admin Account</strong><span class="pill blue">admin</span></div>
+          <p class="subtitle">Goal: maintain fitness | 70.0 kg | Joined Apr 20</p>
+        </div>
+      </section>
+
+      <section class="screen" id="admin-controls">
+        <div class="top">
+          <div>
+            <h1 class="title">Controls</h1>
+            <p class="subtitle">Admin controls for customer app</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="between"><strong>Maintenance mode</strong><span class="pill blue">Off</span></div>
+          <div class="between"><strong>Workout AI</strong><span class="pill">Enabled</span></div>
+          <div class="between"><strong>Diet AI</strong><span class="pill">Enabled</span></div>
+          <div class="between"><strong>Chat Coach</strong><span class="pill">Enabled</span></div>
+        </div>
+        <div class="section">Customer notice</div>
+        <textarea>Diet AI will be updated tonight.</textarea>
+        <button>Save Notice</button>
+      </section>
+
+      <nav class="nav user-nav">
+        <button class="nav-btn active" data-target="home" onclick="show('home')"><b>H</b>Home</button>
+        <button class="nav-btn" data-target="workout" onclick="show('workout')"><b>W</b>Workout</button>
+        <button class="nav-btn" data-target="diet" onclick="show('diet')"><b>D</b>Diet</button>
+        <button class="nav-btn" data-target="profile" onclick="show('profile')"><b>P</b>Profile</button>
+      </nav>
+      <nav class="nav admin-nav hidden">
+        <button class="nav-btn" data-target="admin-dashboard" onclick="show('admin-dashboard')"><b>D</b>Dashboard</button>
+        <button class="nav-btn" data-target="admin-users" onclick="show('admin-users')"><b>U</b>Users</button>
+        <button class="nav-btn" data-target="admin-controls" onclick="show('admin-controls')"><b>C</b>Controls</button>
+      </nav>
+    </section>
+  </main>
+
+  <script>
+    function show(id) {
+      document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const adminMode = id.startsWith('admin-');
+      document.querySelector('.user-nav').classList.toggle('hidden', adminMode);
+      document.querySelector('.admin-nav').classList.toggle('hidden', !adminMode);
+      document.querySelectorAll('.nav-btn').forEach((button) => {
+        button.classList.toggle('active', button.dataset.target === id);
+      });
+    }
+  </script>
 </body>
 </html>
